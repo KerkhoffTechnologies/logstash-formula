@@ -127,6 +127,13 @@ conditional to be used in the "cond" attribute of the plugin.  For this reason,
 this formula does not support nested conditionals at this time.  See
 pillar.example for an example of the conditional functionality.
 
+The formula supports conditionals spanning many rules.  Using the "continue"
+and "endif" attributes will cause a conditional not not to be terminated at
+end of plugin that started with a "cond" attribute.  After the first "cond" 
+and "continue" attribute plugin, add others to be included after by just
+adding a "continue" attribute.  On the last plugin to be contained in the 
+condition, add a "endif" attribute.  See pillar.example for usage.
+
 Overriding Defaults
 -------------------
 This formula sets up certain defaults in map.jinja, specifically:

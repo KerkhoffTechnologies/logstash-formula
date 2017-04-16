@@ -26,12 +26,14 @@
 {%- for plugin in plugin_array %}
   {%- if plugin.cond is defined %}
     {{- output_indented(col, (plugin.cond + " {")) }}
+  {%- endif %}
+  {%- if plugin.continue is defined or plugin.cond is defined or plugin.endif is defined %}
     {%- set col = col + logstash.indent %}
   {%- endif %}
   {{- output_indented(col, (plugin.plugin_name + " {")) }}
   {%- set col = col + logstash.indent %}
   {%- for key, value in plugin.items() %}
-    {%- if key == 'plugin_name' or key == 'cond' %} {#pass#}
+    {%- if key == 'plugin_name' or key == 'cond' or key == 'continue' or key == 'endif' %} {#pass#}
     {%- elif value is sameas True or value is sameas False %}
       {{- output_indented(col, (key + ' => ' + value|string|lower)) }}
     {%- elif value is string or value is number %}
@@ -56,7 +58,7 @@
   {%- endfor %}
   {%- set col = col - logstash.indent %}
   {{- output_indented(col, '}') }}
-  {%- if plugin.cond is defined %}
+  {%- if (plugin.cond is defined and plugin.continue is not defined) or plugin.endif is defined %}
     {%- set col = col - logstash.indent %}
     {{- output_indented(col, '}') }}
   {%- endif %}
