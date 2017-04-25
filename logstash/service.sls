@@ -4,7 +4,7 @@
 {% from "logstash/map.jinja" import logstash with context %}
 {# TODO - Add reload on config changes #}
 
-kibana-name:
+logstash-service:
   service.running:
     - name: {{ logstash.service.name }}
     - enable: True
