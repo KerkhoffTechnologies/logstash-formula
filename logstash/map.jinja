@@ -1,19 +1,49 @@
-{% set logstash = salt['grains.filter_by']({
-  'Debian': {
-    'use_upstream_repo': True,
-    'pkg': 'logstash',
-    'svc': 'logstash',
-    'pkgstate': 'latest',
-    'indent': 4
-  },
-  'RedHat': {
-    'use_upstream_repo': True,
-    'pkg': 'logstash',
-    'svc': 'logstash',
-    'pkgstate': 'latest',
-    'indent': 4
+# -*- coding: utf-8 -*-
+# vim: ft=jinja
+{## Start with  defaults from defaults.sls ##}
+{% import_yaml 'logstash/defaults.yaml' as default_settings %}
+{%- import_yaml 'logstash/versions.yaml' as version_map %}
+{##
+Setup variable using grains['os_family'] based logic, only add key:values here
+that differ from whats in defaults.yaml
+
+Beware, the osmap is currently not used and contains fillers. See defaults.yaml.
+This is because OS-specific overrides are not currently looked after for /opt.
+##}
+{% set os_family_map = salt['grains.filter_by']({
+        'Debian': {
+            "sourceInstallPath" : '/opt/logstash/',
+            'use_upstream_repo': True,
+        },
+        'Suse': {
+            "sourceInstallPath" : '/opt/logstash/',
+            'use_upstream_repo': True,
+        },
+        'Arch': {
+            "sourceInstallPath" : '/opt/logstash/',
+            'use_upstream_repo': True,
+        },
+        'RedHat': {
+            "sourceInstallPath" : '/opt/logstash/',
+            'use_upstream_repo': True,
+        },
   }
-}, merge=salt['pillar.get']('logstash')) %}
+  , grain="os_family"
+  , merge=salt['pillar.get']('logstash:lookup'))
+%}
+{## Merge the flavor_map to the default settings ##}
+{% do default_settings.logstash.update(os_family_map) %}
+
+{%- set version = salt['pillar.get']('logstash:repoVersion', default_settings.logstash['repoVersion']) %}
+{%- do default_settings.logstash.update(version_map[version]) %}
+
+{## Merge in logstash:lookup pillar ##}
+{% set logstash = salt['pillar.get'](
+        'logstash',
+        default=default_settings.logstash,
+        merge=True
+    )
+%}
 
 {%- macro output_indented(col, string) %}
 {{ string|indent(col, true) -}}

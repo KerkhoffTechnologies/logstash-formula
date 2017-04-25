@@ -1,0 +1,3 @@
+'5':
+  repo_url: https://artifacts.elastic.co/packages/5.x/apt
+  configfile: /etc/logstash/logstash.yml

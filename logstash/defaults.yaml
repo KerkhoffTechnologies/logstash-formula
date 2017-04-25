@@ -1,0 +1,12 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+logstash:
+  pkg: logstash # This is not used for source installations, only binary distributions
+  pkgstate: latest
+  indent: 4
+  configfile: '/etc/logstash/logstash.yml' # This is not used for the source install
+  repoVersion: "5" # Elastic repo version
+  service:
+    name: service
+  config:
+    elasticsearch.url: "http://localhost:9200"
