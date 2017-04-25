@@ -1,7 +1,9 @@
 {%- from 'logstash/map.jinja' import logstash with context %}
 
+{# TODO - Add service reload on config change handling #}
+
 include:
-  - logstash.pkg
+  - logstash.install
 
 {%- if logstash.inputs is defined %}
 logstash-config-inputs:
