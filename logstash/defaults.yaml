@@ -7,6 +7,6 @@ logstash:
   configfile: '/etc/logstash/logstash.yml' # This is not used for the source install
   repoVersion: "5" # Elastic repo version
   service:
-    name: service
+    name: logstash
   config:
     elasticsearch.url: "http://localhost:9200"

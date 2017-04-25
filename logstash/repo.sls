@@ -8,6 +8,4 @@ logstash-repo:
     - file: /etc/apt/sources.list.d/elasticsearch.list
     - gpgcheck: 1
     - key_url: https://packages.elastic.co/GPG-KEY-elasticsearch
-    - require_in:
-      - pkg: logstash
     - clean_file: true
