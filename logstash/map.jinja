@@ -57,13 +57,15 @@ This is because OS-specific overrides are not currently looked after for /opt.
   {%- if plugin.cond is defined %}
     {{- output_indented(col, (plugin.cond + " {")) }}
   {%- endif %}
-  {%- if plugin.continue is defined or plugin.cond is defined or plugin.endif is defined %}
+  {%- if plugin.continue is defined or plugin.cond is defined %}
     {%- set col = col + logstash.indent %}
   {%- endif %}
-  {{- output_indented(col, (plugin.plugin_name + " {")) }}
+  {%- if plugin.plugin_name is defined %}
+    {{- output_indented(col, (plugin.plugin_name + " {")) }}
+  {% endif %}
   {%- set col = col + logstash.indent %}
   {%- for key, value in plugin.items() %}
-    {%- if key == 'plugin_name' or key == 'cond' or key == 'continue' or key == 'endif' %} {#pass#}
+    {%- if key == 'plugin_name' or key == 'cond' or key == 'continue' or key == 'endif' or key == 'endonly' %} {#pass#}
     {%- elif value is sameas False or value is sameas True %}
       {{- output_indented(col, (key + ' => ' + value|string|lower)) }}
     {%- elif value is string or value is number %}
@@ -87,8 +89,10 @@ This is because OS-specific overrides are not currently looked after for /opt.
     {%- endif %}
   {%- endfor %}
   {%- set col = col - logstash.indent %}
-  {{- output_indented(col, '}') }}
-  {%- if (plugin.cond is defined and plugin.continue is not defined) or plugin.endif is defined %}
+  {%- if plugin.plugin_name is defined %}
+    {{- output_indented(col, '}') }}
+  {% endif %}
+  {%- if (plugin.cond is defined and plugin.continue is not defined) or plugin.endif is defined or plugin.endonly is defined %}
     {%- set col = col - logstash.indent %}
     {{- output_indented(col, '}') }}
   {%- endif %}
